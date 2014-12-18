@@ -1,0 +1,24 @@
+﻿source;target;type;value
+Consentements;Contacts;licensing;10
+Consentements;Contenus;licensing;10
+Activité sociale;Contacts;suit;10
+Tracking Neolane;Contacts;suit;10
+Actions marketing;Tracking Neolane;resolved;10
+Pages vues;Contacts;suit;10
+Visites;Pages vues;suit;10
+Visites;Sites web;suit;10
+Produits possédés;Contacts;suit;10
+Produits possédés;Commandes eStore;suit;10
+Produits possédés;Enseignes;suit;10
+Produits possédés;Référentiel produits;suit;10
+Produits désirés;Contacts;resolved;10
+Produits désirés;Référentiel produits;resolved;10
+Activité sociale;Contacts;suit;10
+Participations;Contacts;suit;10
+Dossiers promos;Contacts;resolved;10
+Dossiers promos;Bonus promos;resolved;10
+Bonus promos;Promos;resolved;10
+Dossiers promos;Boosters;suit;10
+Boosters;Promos;suit;10
+Produits éligibles;Promos;suit;10
+Produits éligibles;Référentiel produits;suit;10

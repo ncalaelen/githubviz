@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+        <title>ShowCase Dimple</title>
+		<link href="../_design/bootstrap.min.css" rel="stylesheet" type"text/css">
+		<link href="../_design/layout.css" rel="stylesheet" type="text/css">
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
+		<script type="text/javascript" src="../_scripts/jquery-2.1.1.min.js"></script>
+        <!-- <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+        <script type="text/javascript" src="http://dimplejs.org/dist/dimple.v2.1.0.min.js"></script> -->
+        <script type="text/javascript" src="../_scripts/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../_scripts/d3.min.js"></script>
+        <script type="text/javascript" src="../_scripts/dimple.js"></script>
+		<script type="text/javascript" src="../_scripts/nbelnet.js"></script>
+		<script type="text/javascript" src="../_scripts/sankey.js"></script>
+		<script type="text/javascript" src="../_scripts/specialCharts.js"></script>
+		<script type="text/javascript" src="../_scripts/base64.js"></script>
+		
+    </head>
+
+<body>
+	
+	<!-- Left nav bar
+	================= -->
+	<div class="row"> <!-- / whole -->
+		<div class="menunav col-md-1">
+		</div>
+		
+		<!-- Content 
+		============ -->
+		<div class="col-md-11" id="myContent">	
+		</div>  <!-- / content -->
+	</div>  <!-- \ whole -->
+	<!-- javascript -->
+	<script type="text/javascript">
+	pageName = "force";
+	configFile = "config_force.csv";
+	modeLayout = "auto"; // "manual", "auto"
+	specialCharts = "yes"; // "yes", "no"
+	chefOrchestre(configFile, modeLayout, pageName, specialCharts);
+	
+	</script>
+	<!-- / javascript -->
+	
+<p>Hello!</p>
+</body>
+</html>

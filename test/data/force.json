@@ -1,0 +1,10 @@
+{
+  "nodes": [
+    {"x": 200, "y": 200},
+    {"x": 300, "y": 300}
+  ],
+  "links": [
+	  {"source":"Consentements", "target":"Contacts"},
+	  {"source":"Contenus", "target":"Consentements"}
+  ]
+}

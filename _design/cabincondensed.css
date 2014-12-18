@@ -1,0 +1,32 @@
+/* latin */
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Cabin Condensed'), local('CabinCondensed'), url(http://fonts.gstatic.com/s/cabincondensed/v7/B0txb0blf2N29WdYPJjMSg28oxcdpsJfKmE9BCJ6Rf8.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* latin */
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Cabin Condensed Medium'), local('CabinCondensed-Medium'), url(http://fonts.gstatic.com/s/cabincondensed/v7/Ez4zJbsGr2BgXcNUWBVgELKfvsNHqb5SAeuKJA4qixU.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* latin */
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url(http://fonts.gstatic.com/s/cabincondensed/v7/Ez4zJbsGr2BgXcNUWBVgEFvZtoxQI33KV5GiwJDP_SQ.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* latin */
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Cabin Condensed Bold'), local('CabinCondensed-Bold'), url(http://fonts.gstatic.com/s/cabincondensed/v7/Ez4zJbsGr2BgXcNUWBVgEOLfqHHVR6Wv7GJmZLtpYwY.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
