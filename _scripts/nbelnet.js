@@ -224,7 +224,7 @@ function encode_as_img_and_link(){
 	function prepareDimpleChart(configData, d, i) {
 		
 		// déclare les variables locales utilisées pour définir chartConfig tenant compte d'adaptations.
-		var finalContainer = [], finalBottom = [], finalLeft = [], isFilter = false, finalFilterValues = [], finalSvgWidth = [], finalSvgHeight = [], finalSvgUnit = [], dataMime = [],  chartDimple = [], chartSerie = [], nbSeries = [], chartVersion = [], isInverse = [], /* polyColors = [], */ chartPalette = [], isMarkers = [], isPercent = [], positionBottom = [], positionLeft = [], chartOrder = [], orderDesc = [], messagesConfig = [], umargin = [], lmargin = [], tmargin = [], rmargin = [], bmargin = [];
+		var finalContainer = [], finalBottom = [], finalLeft = [], isFilter = false, finalFilterValues = [], finalSvgWidth = [], finalSvgHeight = [], finalSvgUnit = [], dataMime = [],  chartDimple = [], chartSerie = [], nbSeries = [], chartVersion = [], isInverse = [], /* polyColors = [], */ chartPalette = [], isMarkers = [], isPercent = [], positionBottom = [], positionLeft = [], chartOrder = [], orderDesc = [], messagesConfig = [], umargin = [], lmargin = [], tmargin = [], rmargin = [], bmargin = [], alegend = [], xlegend = [], ylegend = [], wlegend = [], hlegend = [];
 		
 
 		// détermine la hauteur/largeur du svg accueillant le chartContainer.
@@ -268,7 +268,7 @@ function encode_as_img_and_link(){
 			}
 		}
 
-		// détermine les margins
+		// détermine les margins (note: il est possible de mixer les unités pour un même margin : https://github.com/PMSI-AlignAlytics/dimple/wiki/dimple.chart#setMargins)
 		(d.chart_umargin == "%") ? umargin = "%" : umargin = "px";
 		if (d.chart_lmargin != "" && d.chart_tmargin != "" && d.chart_rmargin != "" && d.chart_bmargin != "") {
 			lmargin = d.chart_lmargin + umargin;
@@ -350,7 +350,7 @@ function encode_as_img_and_link(){
 
 		// change la catégorie du graphe si chartGroup renseigné.
 		(d.chart_baxisfield.substr(0,1) == "[") ? finalBottom = JSON.parse(d.chart_baxisfield) : finalBottom = d.chart_baxisfield;
-		//(d.chart_gaxisfield != "") ? finalBottom = JSON.parse(d.chart_gaxisfield) : finalBottom = d.chart_baxisfield;
+		// DEPRECATED (d.chart_gaxisfield != "") ? finalBottom = JSON.parse(d.chart_gaxisfield) : finalBottom = d.chart_baxisfield;
 		finalLeft = d.chart_laxisfield;
 		
 		// détermine la position de l'axe du bas ("category", ou "x") et de l'axe de gauche ("measure", ou "y").
@@ -386,8 +386,26 @@ function encode_as_img_and_link(){
 		if (d.chart_serie == "") {
 			(d.chart_legend == true) ? isLegend = true : isLegend = false;
 			(isLegend == true) ? messagesConfig = messagesConfig + "\n" + finalContainer + ": il ne devrait pas y avoir de légende affichée, car il n'y a qu'une seule série." : "";
-		} else{ // plusieurs séries
+		} else { // plusieurs séries
 			(d.chart_legend == false && d.chart_legend != "") ? isLegend = false : isLegend = true;
+		}
+		// position de la légende Note : On peut spécifier des séries à afficher dans la légende : https://github.com/PMSI-AlignAlytics/dimple/wiki/dimple.chart#addLegend)
+		if (isLegend == true) {
+			(d.chart_ulegend == "%") ? ulegend = "%" : ulegend = "px";
+			if (d.chart_xlegend != "" && d.chart_ylegend != "" && d.chart_wlegend != "" && d.chart_hlegend != "") {
+				xlegend = d.chart_xlegend + ulegend;
+				ylegend = d.chart_ylegend + ulegend;
+				wlegend = d.chart_wlegend + ulegend;
+				hlegend = d.chart_hlegend + ulegend;
+				(d.chart_alegend != "left" && d.chart_alegend != "right") ? alegend = "left" : alegend = d.chart_alegend;
+			} else {
+				xlegend = "70px";
+				ylegend = "5%";
+				wlegend = "90%";
+				hlegend = "20px";
+				alegend = "left";
+				// slegend : séries à afficher.
+			}
 		}
 		
 		// détermine la position du titre du chart (en bas si vide).
@@ -526,6 +544,11 @@ function encode_as_img_and_link(){
 		tmargin: tmargin,
 		rmargin: rmargin,
 		bmargin: bmargin,
+		alegend: alegend,
+		xlegend: xlegend,
+		ylegend: ylegend,
+		wlegend: wlegend,
+		hlegend: hlegend,
 		/*
 		chartRightOrderField: chartRightOrderField,
 		chartRightOrderDesc: chartRightOrderDesc,
@@ -651,14 +674,7 @@ function drawDimpleChart(configData, d, i, chartConfig) {
 				(chartConfig["isMarkers"] == true) ? s.lineMarkers = true : "";
 				**/
 				// applique la légende
-				//(chartConfig["isLegend"] == true) ? myChart.addLegend(60, 10, 510, 20, "right") : "";
-				/*
-				(chartConfig["isLegend"] == true) ? myChart.addLegend(70, "5%", "90%", 20, "left") : "";
-				if (chartConfig["isLegend"] == true) {
-					(d.chart_raxisfield != "") ? myChart.addLegend(70, "%", "90%", 70, "left") : myChart.addLegend(70, "%", "90%", 20, "left");
-				}	
-*/				
-				// TODO gérer le fait que les valeurs de la légende soient oberridées.
+				(chartConfig["isLegend"] == true) ? myChart.addLegend(chartConfig["xlegend"], chartConfig["ylegend"], chartConfig["wlegend"], chartConfig["hlegend"], chartConfig["alegend"]) : "";
 				/* NTH appliquer la palette en une seule instruction.
 				myChart.defaultColors = new dimple.color(chartConfig["polyColors"]);
 				*/
@@ -895,6 +911,7 @@ String.prototype.replaceAll = function(search, replace) {
 - Intensité couleur des bulles fonction du volume (même couleur)
 - Afficher infobulle sur lien
 - Possibilité de fixer la position des bulles
+- Overrider la position et taille de la légende selon qu'il y a un axe à droite ou en haut.
 
 
 === MISC ===
@@ -911,5 +928,6 @@ String.prototype.replaceAll = function(search, replace) {
 ** DONE **
 - Fusionner baxisfield et gaxisfield ???
 - Définir les margin via fichier de config (là, c'est en dur)
+- Légende corrigée et paramétrable
 
 **/
