@@ -224,7 +224,7 @@ function encode_as_img_and_link(){
 	function prepareDimpleChart(configData, d, i) {
 		
 		// déclare les variables locales utilisées pour définir chartConfig tenant compte d'adaptations.
-		var finalContainer = [], finalBottom = [], finalLeft = [], isFilter = false, finalFilterValues = [], finalSvgWidth = [], finalSvgHeight = [], finalSvgUnit = [], dataMime = [],  chartDimple = [], chartSerie = [], nbSeries = [], chartVersion = [], isInverse = [], /* polyColors = [], */ chartPalette = [], isMarkers = [], isPercent = [], positionBottom = [], positionLeft = [], chartOrder = [], orderDesc = [], messagesConfig = [];
+		var finalContainer = [], finalBottom = [], finalLeft = [], isFilter = false, finalFilterValues = [], finalSvgWidth = [], finalSvgHeight = [], finalSvgUnit = [], dataMime = [],  chartDimple = [], chartSerie = [], nbSeries = [], chartVersion = [], isInverse = [], /* polyColors = [], */ chartPalette = [], isMarkers = [], isPercent = [], positionBottom = [], positionLeft = [], chartOrder = [], orderDesc = [], messagesConfig = [], umargin = [], lmargin = [], tmargin = [], rmargin = [], bmargin = [];
 		
 
 		// détermine la hauteur/largeur du svg accueillant le chartContainer.
@@ -244,7 +244,7 @@ function encode_as_img_and_link(){
 					finalSvgUnit = "%";
 				}
 			}
-		} else{
+		} else {
 			finalSvgWidth = 100;
 			finalSvgHeight = 100;
 			finalSvgUnit = "%";
@@ -268,6 +268,21 @@ function encode_as_img_and_link(){
 			}
 		}
 
+		// détermine les margins
+		(d.chart_umargin == "%") ? umargin = "%" : umargin = "px";
+		if (d.chart_lmargin != "" && d.chart_tmargin != "" && d.chart_rmargin != "" && d.chart_bmargin != "") {
+			lmargin = d.chart_lmargin + umargin;
+			tmargin = d.chart_tmargin + umargin;
+			rmargin = d.chart_rmargin + umargin;
+			bmargin = d.chart_bmargin + umargin;
+		} else {
+			lmargin = "100%";
+			tmargin = "100%";
+			rmargin = "100%";
+			bmargin = "100%";
+		}
+		
+		
 		// détermine comment lire le fichier de données
 		(d.data_delimiter == ",") ? dataMime = "text/csv" : dataMime = "text/plain"; // TODO : vérifier que "text/csv" s'applique forcément à tout fichier csv ayant pour séparateur des virgules, indépendamment des "" ou '' qu'il pourrait y avoir dans le fichier. Vérifier ce qui se passe si décimales avec des "." ou ",".
 		
@@ -431,7 +446,7 @@ function encode_as_img_and_link(){
 
 		console.log(configData);		
 		// cette façon de faire peut ne pas fonctionner dans tous les cas, mais a le mérite de laisser de la souplesse dans la construction du fichier de config. Si ça ne marche pas, définir myArray = [chartContainer, chartGroup, etc.]; puis appeler les éléments de myArray comme ça myArray[0]. Ca suppose que l'ordre des éléments du fichier de config manipulés soient toujours dans le même ordre. + d'infos : http://www.w3schools.com/js/js_arrays.asp
-		chartConfig = { // seules les variables numériques et dates doivent être déclarées, les autres, c'est juste pour le debuggage.
+		chartConfig = { // seules les variables numériques et dates doivent être déclarées, les autres, c'est juste pour le debuggage. Déclarer toutes les variables qui ne sont pas dansd le fichier de config (çàd celles qui ont été retraitées).
 		divSvgHeight: +d.div_svgheight,
 		divSvgWidth: +d.div_svgwidth,
 		divSvgUnit: d.div_svgunit,
@@ -506,6 +521,11 @@ function encode_as_img_and_link(){
 		chartBottomOrderDesc: chartBottomOrderDesc,
 		chartSerieOrderField: chartSerieOrderField,
 		chartSerieOrderDesc: chartSerieOrderDesc,
+		umargin: umargin,
+		lmargin: lmargin,
+		tmargin: tmargin,
+		rmargin: rmargin,
+		bmargin: bmargin,
 		/*
 		chartRightOrderField: chartRightOrderField,
 		chartRightOrderDesc: chartRightOrderDesc,
@@ -575,11 +595,8 @@ function drawDimpleChart(configData, d, i, chartConfig) {
 			var dsv = d3.dsv(chartConfig["dataDelimiter"], chartConfig["dataMime"]);
 			dsv(chartConfig["dataFile"], function (data) {
 				var myChart = new dimple.chart(svg, data);
-				//myChart.setMargins("70px", "70px", "20px", "100px")
-				//(d.chart_umargin == "%") ? "%" : "px";
-				var lmargin = d.chart_lmargin + "px";
-				alert(lmargin);
-				myChart.setMargins(lmargin, "70px", "20px", "100px")
+				// définit les marges du chart
+				myChart.setMargins(chartConfig["lmargin"], chartConfig["tmargin"], chartConfig["rmargin"], chartConfig["bmargin"]);
 				var b = [], l = [], s = [], r = [], t = [];
 				// définit l'axe du bas
 				(chartConfig["chartBottomType"] == "time") ? b = myChart.addTimeAxis(chartConfig["positionBottom"], chartConfig["finalBottom"], "%d/%m/%Y", "%a") : b = myChart.addCategoryAxis(chartConfig["positionBottom"], chartConfig["finalBottom"]);
@@ -854,7 +871,6 @@ String.prototype.replaceAll = function(search, replace) {
 - Gérer dimple quatre axes
 - Gérer filtre de données à multiples critères
 - Gérer la concordance entre baxisfield et gaxisfield, et l'ordre correct et cohérent entre les deux settings (ORDER).
-- Définir les margin via fichier de config (là, c'est en dur)
 - Voir pourquoi la légende ne se définit pas correctement (marges, et ordre des éléments)
 - Ask Stackoverflow sur l'aire multiple (l'une devant l'autre)
 
@@ -894,5 +910,6 @@ String.prototype.replaceAll = function(search, replace) {
 
 ** DONE **
 - Fusionner baxisfield et gaxisfield ???
+- Définir les margin via fichier de config (là, c'est en dur)
 
 **/
