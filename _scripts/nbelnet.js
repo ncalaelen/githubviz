@@ -159,7 +159,7 @@ function encode_as_img_and_link(){
 		//		.attr("class", "row")
 				.append("div")
 					//.attr("class", "col-md-12 bucket");
-					.attr("class", "col-md-12 bucket")
+					.attr("class", "col-md-6 bucket")
 					.style("font-size", "small");
 		
 		myContent.append("div")
@@ -224,34 +224,9 @@ function encode_as_img_and_link(){
 	function prepareDimpleChart(configData, d, i) {
 		
 		// déclare les variables locales utilisées pour définir chartConfig tenant compte d'adaptations.
-		var finalContainer = [], finalBottom = [], finalLeft = [], isFilter = false, finalFilterValues = [], finalSvgWidth = [], finalSvgHeight = [], finalSvgUnit = [], dataMime = [],  chartDimple = [], chartSerie = [], nbSeries = [], chartVersion = [], isInverse = [], /* polyColors = [], */ chartPalette = [], isMarkers = [], isPercent = [], positionBottom = [], positionLeft = [], chartOrder = [], orderDesc = [], messagesConfig = [], umargin = [], lmargin = [], tmargin = [], rmargin = [], bmargin = [], alegend = [], xlegend = [], ylegend = [], wlegend = [], hlegend = [];
+		var finalContainer = [], finalBottom = [], finalLeft = [], isFilter = false, finalFilterValues = [], finalSvgWidth = [], finalSvgHeight = [], finalSvgUnit = [], dataMime = [],  chartDimple = [], chartSerie = [], nbSeries = [], chartVersion = [], isInverse = [], /* polyColors = [], */ chartPalette = [], isMarkers = [], isPercent = [], positionBottom = [], positionLeft = [], chartOrder = [], orderDesc = [], messagesConfig = [], umargin = [], lmargin = [], tmargin = [], rmargin = [], bmargin = [], alegend = [], xlegend = [], ylegend = [], wlegend = [], hlegend = [], divRatio;
 		
-
-		// détermine la hauteur/largeur du svg accueillant le chartContainer.
-		if (d.div_svgunit == "px" || d.div_svgunit == "%") {
-			if (d.div_svgwidth != "") {
-				finalSvgWidth = d.div_svgwidth;
-				(d.div_svgheight != "") ? finalSvgHeight = d.div_svgheight : finalSvgHeight = finalSvgWidth;
-				finalSvgUnit = d.div_svgunit;
-			} else{
-				if (d.div_svgheight != "") {
-					finalSvgHeight = d.div_svgheight;
-					finalSvgWidth = finalSvgHeight;
-					finalSvgUnit = d.div_svgunit;
-				} else{
-					finalSvgWidth = 100;
-					finalSvgHeight = 100;
-					finalSvgUnit = "%";
-				}
-			}
-		} else {
-			finalSvgWidth = 100;
-			finalSvgHeight = 100;
-			finalSvgUnit = "%";
-		}
-		//alert("H : " + finalSvgHeight + " W : " + finalSvgWidth + " U : " + finalSvgUnit);
-		// TODO essaie de récupérer la taille en pixels de la width afin de l'appliquer à la hauteur (qui elle n'est pas définie par Bootstrap) pour pouvoir appliquer un ratio largeur/hauteur. Cf Notes.txt.
-
+		
 		// si chartContainer est vide, affecte un nom par défaut.
 		(d.chart_container == "") ? finalContainer = "chartContainer-" + i : finalContainer = d.chart_container;
 
@@ -268,6 +243,36 @@ function encode_as_img_and_link(){
 			}
 		}
 
+		// détermine la hauteur/largeur du svg accueillant le chartContainer.
+		if (d.div_ratio != "") { // ratio spécifié
+			finalSvgWidth = $("#" + finalContainer).innerWidth();
+			var ratio = d.div_ratio;
+			finalSvgHeight = finalSvgWidth * ratio;
+			finalSvgUnit = "px";
+		} else {
+			if (d.div_svgunit == "px" || d.div_svgunit == "%") {
+				if (d.div_svgwidth != "") {
+					finalSvgWidth = d.div_svgwidth;
+					(d.div_svgheight != "") ? finalSvgHeight = d.div_svgheight : finalSvgHeight = finalSvgWidth;
+					finalSvgUnit = d.div_svgunit;
+				} else {
+					if (d.div_svgheight != "") {
+						finalSvgHeight = d.div_svgheight;
+						finalSvgWidth = finalSvgHeight;
+						finalSvgUnit = d.div_svgunit;
+					} else {
+						finalSvgWidth = $("#" + finalContainer).innerWidth();
+						finalSvgHeight = finalSvgWidth;
+						finalSvgUnit = "px";
+					}
+				}
+			} else {
+				var ratio = 0.75;
+				finalSvgWidth = $("#" + finalContainer).innerWidth();
+				finalSvgHeight = finalSvgWidth * ratio;
+				finalSvgUnit = "px";
+			}
+		}
 		// détermine les margins (note: il est possible de mixer les unités pour un même margin : https://github.com/PMSI-AlignAlytics/dimple/wiki/dimple.chart#setMargins)
 		(d.chart_umargin == "%") ? umargin = "%" : umargin = "px";
 		if (d.chart_lmargin != "" && d.chart_tmargin != "" && d.chart_rmargin != "" && d.chart_bmargin != "") {
@@ -276,10 +281,10 @@ function encode_as_img_and_link(){
 			rmargin = d.chart_rmargin + umargin;
 			bmargin = d.chart_bmargin + umargin;
 		} else {
-			lmargin = "100%";
-			tmargin = "100%";
-			rmargin = "100%";
-			bmargin = "100%";
+			lmargin = "5%";
+			tmargin = "5%";
+			rmargin = "5%";
+			bmargin = "5%";
 		}
 		
 		
@@ -404,7 +409,7 @@ function encode_as_img_and_link(){
 				wlegend = "90%"; // 92%
 				hlegend = "20px"; // 10%
 				alegend = "left";
-				// slegend : séries à afficher.
+				// slegend : séries particulières à afficher (ou ne pas afficher) dans la légende.
 			}
 		}
 		
@@ -883,12 +888,14 @@ String.prototype.replaceAll = function(search, replace) {
 /** A FAIRE **
 
 === DIMPLE ===
+- PARSER une array d'arrays !
 - Rajouter bordures plus foncée sur les aires (rajouter une série ??)
 - Gérer dimple quatre axes
 - Gérer filtre de données à multiples critères
 - Gérer la concordance entre baxisfield et gaxisfield, et l'ordre correct et cohérent entre les deux settings (ORDER).
-- Voir pourquoi la légende ne se définit pas correctement (marges, et ordre des éléments)
+- Voir pourquoi la légende ne se définit pas correctement (marges, et ordre des éléments) dans Reporting Am...ry.
 - Ask Stackoverflow sur l'aire multiple (l'une devant l'autre)
+- Calculer la taille des marges en fonction de la plus grande longueur d'étiquettes (uniquement pour les graphes ou les étiquettes sont verticales !)
 
 
 
@@ -896,7 +903,6 @@ String.prototype.replaceAll = function(search, replace) {
 - Rajouter une zone où on a le nom du fichier du dataset (masquée ?)
 - S'appuyer sur des templates de bucket ?
 - Avoir plusieurs chartContainer dans un bucket
-- Gérer le rapport hauteur/largeur du SVG (en récupérant la hauteur/largeur de l'élément DOM parent
 
 
 === D3 ===
@@ -929,5 +935,6 @@ String.prototype.replaceAll = function(search, replace) {
 - Fusionner baxisfield et gaxisfield ???
 - Définir les margin via fichier de config (là, c'est en dur)
 - Légende corrigée et paramétrable
-
+- Ratio hauteur/largeur du chartContainer
+- Gérer le rapport hauteur/largeur du SVG (en récupérant la hauteur/largeur de l'élément DOM parent
 **/

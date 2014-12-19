@@ -63,7 +63,7 @@ h1 {
 	padding: 0px;
 }
 .chartContainer {
-	height: 400px;
+/*	height: 400px; */
 /* 	border: 1px solid black; */
 	margin: 0px;
 	padding: 0px;
@@ -136,7 +136,7 @@ h1 {
 .node {
   cursor: move;
   fill: #ccc;
-  /* stroke: #000; */
+  stroke: #000;
   stroke-width: 1.5px;
 }
 
@@ -188,5 +188,5 @@ text {
   fill: #000;
   font: 10px sans-serif;
   pointer-events: none;
-  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+/*  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff; */ /* utile pour le dorece directed layout */
 }
