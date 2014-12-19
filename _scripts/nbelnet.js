@@ -399,10 +399,10 @@ function encode_as_img_and_link(){
 				hlegend = d.chart_hlegend + ulegend;
 				(d.chart_alegend != "left" && d.chart_alegend != "right") ? alegend = "left" : alegend = d.chart_alegend;
 			} else {
-				xlegend = "70px";
-				ylegend = "5%";
-				wlegend = "90%";
-				hlegend = "20px";
+				xlegend = "70px"; // 5%
+				ylegend = "5%";  // 5%
+				wlegend = "90%"; // 92%
+				hlegend = "20px"; // 10%
 				alegend = "left";
 				// slegend : séries à afficher.
 			}
