@@ -1,0 +1,17 @@
+CALCULER MAX D'UN DATASET
+
+https://www.google.fr/search?q=return+the+date+of+the+highest+value+in+javascript&oq=return+the+date+of+the+highest+value+in+javascript&aqs=chrome..69i57.20010j0j7&sourceid=chrome&es_sm=93&ie=UTF-8
+http://www.tutorialspoint.com/javascript/javascript_builtin_functions.htm
+http://www.w3schools.com/jsref/jsref_indexof.asp
+http://www.w3schools.com/jsref/jsref_max.asp
+http://localhost/dataviz/test/test/forcedirectedsource.html
+https://github.com/mbostock/d3/wiki/Arrays#d3_max
+http://stackoverflow.com/questions/23608103/how-to-use-d3-max-with-an-associative-array
+http://stackoverflow.com/questions/26951208/basic-d3js-max-returning-multiple-values
+http://stackoverflow.com/questions/11488194/how-to-use-d3-min-and-d3-max-within-a-d3-json-command
+http://stackoverflow.com/questions/21017214/d3-js-max-and-min-value-from-json-data-which-has-array-of-values/21017553#21017553
+https://leanpub.com/D3-Tips-and-Tricks/read#leanpub-auto-multi-line-graph-with-automatic-legend-and-toggling-show--hide-lines
+https://www.google.fr/search?q=get+the+index+of+the+maximum+value+in+an+array+in+javascript&oq=get+the+index+of+the+maximum+value+in+an+array+in+javascript&aqs=chrome..69i57.19767j0j7&sourceid=chrome&es_sm=93&ie=UTF-8#q=get+the+index+of+the+maximum+value+in+an+array+in+d3.js
+http://stackoverflow.com/questions/11301438/return-index-of-greatest-value-in-an-array
+http://stackoverflow.com/questions/10564441/how-to-find-the-max-min-of-a-nested-array-in-javascript
+http://stackoverflow.com/questions/21761843/d3-js-selecting-min-max-value-from-an-array-of-arrays
