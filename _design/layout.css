@@ -116,8 +116,6 @@ h1 {
 
 
 
-
-
 /* FOR Spécial Force */
 
 /* .link { NOOB
@@ -136,8 +134,9 @@ h1 {
 .node {
   cursor: move;
   fill: #ccc;
-  stroke: #000;
-  stroke-width: 1.5px;
+  /* Cela pourrit Sankey design */
+  /* stroke: #000; */
+  /* stroke-width: 1.5px; */
 }
 
 .node.fixed {
@@ -188,5 +187,5 @@ text {
   fill: #000;
   font: 10px sans-serif;
   pointer-events: none;
-/*  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff; */ /* utile pour le dorece directed layout */
+  /*text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;  /* utile pour le force directed layout */
 }

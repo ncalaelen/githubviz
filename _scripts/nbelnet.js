@@ -30,7 +30,7 @@ function chefOrchestre(configFile, modeLayout, pageName, specialCharts) {
 			
 		});
 			// appelle fonction de création de chart Manuelle lorsque toutes les boucles sont terminées (mais ça veut dire qu'on ne peut utiliser ni i ni d).
-			drawManualChart(pageName);
+			//(specialCharts == "yes") ? drawManualChart(pageName) : "";
 			
 	});
 	// place un lien pour générer une image.
@@ -926,7 +926,8 @@ String.prototype.replaceAll = function(search, replace) {
 - Export dataset
 - Try a design that looks like info + design (big numbers, chart full screen)
 - Skip visu but not bucket
-
+- Créer un générerateur de données (min, max, nb champs, quelles valeurs pour chaque champ) 
+- Ne lancer SpecialCharts que si SpecialCharts = "yes"
 
 
 

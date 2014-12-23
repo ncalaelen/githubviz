@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+        <title>ConfigTest</title>
+		<link href="../_design/bootstrap.min.css" rel="stylesheet" type"text/css">
+		<link href="../_design/layout.css" rel="stylesheet" type="text/css">
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
+		<script type="text/javascript" src="../_scripts/jquery-2.1.1.min.js"></script>
+        <!-- <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+        <script type="text/javascript" src="http://dimplejs.org/dist/dimple.v2.1.0.min.js"></script> -->
+        <script type="text/javascript" src="../_scripts/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../_scripts/d3.min.js"></script>
+        <script type="text/javascript" src="../_scripts/dimple.js"></script>
+		<script type="text/javascript" src="../_scripts/nbelnet.js"></script>
+		<script type="text/javascript" src="../_scripts/sankey.js"></script>
+		<script type="text/javascript" src="../_scripts/specialCharts.js"></script>
+		<script type="text/javascript" src="../_scripts/base64.js"></script>
+		
+    </head>
+
+<body>
+	<!-- Header
+	=========== -->
+	<div class="page-header"> <!-- \ header -->
+	<h1>ma page</h1>
+	</div><!-- / header -->
+	
+	<!-- Left nav bar
+	================= -->
+	<div class="row"> <!-- / whole -->
+		<div class="menunav col-md-1">
+		menu nav
+		</div>
+		
+		<!-- Content 
+		============ -->
+		<div class="col-md-11" id="myContent">	
+		<div id="chartContainer" class="col-md-12 chartContainer">
+		  <script type="text/javascript"> 
+		 /* THIS IS A MANUAL CHART */ 
+			var chartType = "bar";
+			var chartDimple = dimple.plot[chartType];
+			var chartSerie = "Origine";
+			var chartGroup = "Date";
+			var chartMeasure = "Visites";
+			var filterField = "category";
+			//var filterValues = ["Aperture", "LexCorp"];
+			var dataFile = "data/origine.csv";
+			var dataDelimiter = ";";
+			var dataMime = "text/plain";
+			// [​[fill]align][sign][symbol][0][width][,][.precision][type]
+			
+			
+			var svg = dimple.newSvg("#chartContainer", 590, 400);
+			var dsv = d3.dsv(dataDelimiter, dataMime);
+			dsv(dataFile, function (data) {
+			//var data = dimple.filterData(data, filterField, filterValues) // data = dimple.filterData(data, "Owner", ["Aperture", "LexCorp"])
+			  var myChart = new dimple.chart(svg, data);
+			  myChart.setBounds(60, 30, 510, 305)
+			  var x = myChart.addCategoryAxis("x", chartGroup); // var x = myChart.addCategoryAxis("x", ["Channel" , "Month"]);
+			  x.addOrderRule("Date");
+			  var y = myChart.addMeasureAxis("y", chartMeasure);
+			  myChart.addSeries(chartSerie, chartDimple); // myChart.addSeries("Channel", dimple.plot.bar);
+			  myChart.addLegend(60, 10, 510, 20, "right");
+			  myChart.draw();
+
+
+			// find the highest value
+			
+			data.forEach(function(d, i) {
+			max = d3.max(d.Visites);
+			min = d3.min(d.Visites);
+			datemax = d.Date
+			});
+			
+			
+			/*
+			var myMax = d3.max(data, function(d){
+				var maxVal = d3.max(d["Unit Sales"]);
+				return maxVal;
+			})
+			*/
+			/*
+			var myMax = d3.max(data, function(d) { return d.Visites; });
+			var myMaxDate = d3.max(data, function(d) { return d.Date; });
+			alert("max::" + myMax + "date :" + myMaxDate);
+			*/
+			
+			/*
+			var max = d3.max(data, function(d) {
+			  return d3.max(d["Unit Sales"], function(e) { return d3.max(e); });
+			});
+			*/
+			
+			//alert("max : " + max + "min : " + min);
+			});
+		  </script>
+		</div>
+		</div>  <!-- / content -->
+	</div>  <!-- \ whole -->
+	<!-- javascript -->
+	<script type="text/javascript">
+	pageName = "configtestmax";
+	configFile = "config_testmax.csv";
+	modeLayout = "auto"; // "manual", "auto"
+	specialCharts = "yes"; // "yes", "no"
+	chefOrchestre(configFile, modeLayout, pageName, specialCharts);
+	
+
+	</script>
+
+	<!-- / javascript -->
+
+</script>
+<p>Hello!</p>
+<canvas width="900" height="500" style="display:none"></canvas> <!-- TODO: récupérer les hauteur/largeur du svg à générer -->
+</body>
+</html>
