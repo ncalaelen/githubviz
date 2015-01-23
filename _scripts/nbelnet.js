@@ -238,7 +238,7 @@ function encode_as_img_and_link(){
 				return; // sortie anticipée script
 			} else{
 				// affiche message d'erreur si le container qui doit accueillir le chart n'existe pas dans le HTML.
-				alert("#" + finalContainer + " n'existe pas dans le HTML. \n Le graphe correspondant sera zappé.");
+				alert("#" + finalContainer + " n'existe pas dans le HTML. \n Container manquant pour y déposer le graphe. \n Le graphe correspondant sera zappé.");
 				return; // sortie anticipée script
 			}
 		}
@@ -324,8 +324,8 @@ function encode_as_img_and_link(){
 		
 		
 		// détermine s'il y a un filtre à appliquer sur les données selon ce qui est spécifié.
+		//(d.data_filtervalues.substr(0,1) == "[") ? finalFilterValues = JSON.parse(d.data_filtervalues) : finalFilterValues = d.data_filtervalues;
 		(d.data_filterfield != "" && d.data_filtervalues != "") ? isFilter = true : isFilter = false;
-		(d.data_filtervalues.substr(0,1) == "[") ? finalFilterValues = JSON.parse(d.data_filtervalues) : finalFilterValues = d.data_filtervalues;
 		// si la valeur est de type ["critere1", "critère2"], c'est un objet, il faut la parser, sinon, c'est une chaîne, et c'est ok ("critere1").
 		// TODO : Gérer filtre sur plusieurs axes (successions de filtres).
 		
@@ -333,7 +333,7 @@ function encode_as_img_and_link(){
 		(d.chart_type == "") ? chartType = "HIS" : chartType = d.chart_type; // affecte type de graphe par défaut.
 		// (chartType == "ARE") ? chartDimple = "area" : chartDimple = "bar"; // cette ligne-là ne fonctionne pas (alors qu'elle est plus propre), "bar" est affecté même si c'est une "ARE".
 		(chartType == "ARE" || "VAR") ? chartDimple = "area" : "bar";
-		(chartType == "LIN") ? chartDimple = "line" : "bar";
+		(chartType == "LIN" || "VIN") ? chartDimple = "line" : "bar";
 		(chartType == "BAR" || chartType == "HIS") ? chartDimple = "bar" : "bar";
 		(chartType == "RIN" || chartType == "PIE") ? chartDimple = "pie" : "bar";
 		(chartType == "BUB" || chartType == "SCA") ? chartDimple = "bubble" : "bar";
@@ -348,20 +348,101 @@ function encode_as_img_and_link(){
 		
 		// applique des points de données dans le graphe pour les aires, courbes, sauf si spécifié autrement.
 		if (d.chart_markers == true) {
-			(d.chart_type == "ARE" || d.chart_type == "BOX" || d.chart_type == "LIN" || d.chart_type == "RAD") ? isMarkers = true : isMarkers = false;
+			(d.chart_type == "ARE" || d.chart_type == "BOX" || d.chart_type == "LIN" || d.chart_type == "VIN" || d.chart_type == "RAD") ? isMarkers = true : isMarkers = false;
 		} else{
 			isMarkers = true;
 		}
 
+		/**
 		// change la catégorie du graphe si chartGroup renseigné.
 		(d.chart_baxisfield.substr(0,1) == "[") ? finalBottom = JSON.parse(d.chart_baxisfield) : finalBottom = d.chart_baxisfield;
 		// DEPRECATED (d.chart_gaxisfield != "") ? finalBottom = JSON.parse(d.chart_gaxisfield) : finalBottom = d.chart_baxisfield;
 		finalLeft = d.chart_laxisfield;
+		**/
+		
 		
 		// détermine la position de l'axe du bas ("category", ou "x") et de l'axe de gauche ("measure", ou "y").
-		(chartType == "BAR" || chartType == "VAR") ? isInverse = true : isInverse = false;
-		(chartType == "BAR" || chartType == "VAR") ? positionBottom = "y" : positionBottom = "x";
-		(chartType == "BAR" || chartType == "VAR") ? positionLeft = "x" : positionLeft = "y";
+		(chartType == "BAR" || chartType == "VAR" || chartType == "VIN") ? isInverse = true : isInverse = false;
+		/**
+		(chartType == "BAR" || chartType == "VAR" || chartType == "VIN") ? positionBottom = "y" : positionBottom = "x";
+		(chartType == "BAR" || chartType == "VAR" || chartType == "VIN") ? positionLeft = "x" : positionLeft = "y";
+		**/
+
+		
+		
+		// Gère les axes.
+		var allAxis = [];
+		if (d.chart_allaxis == "") {
+			alert("Impossible de dessiner le graphe, car aucun axe n'est défini. END.");
+			return;
+		} //else {
+			(d.chart_allaxis.substring(0,2) == "[[") ? allAxis = JSON.parse(d.chart_allaxis) : allAxis = d.chart_allaxis;
+			(d.chart_allaxis.substring(0,2) == "[[") ? nbAxis = allAxis.length : nbAxis = 1;
+			//(nbAxis > 1) ? axisDefinition = allAxis[i] : axisDefinition = allAxis;
+			// IMPORTANT ! Chaque axe doit être défini comme suit : ['Name', 'Type', 'Position', 'Field', 'Mekko', 'Input', 'Output', 'Colors', 'Logbase'].
+			// Valeurs possibles : [(leftAxis, topAxis, rightAxis, bottomAxis, etc), (category, measure, percent, time, color, log), (x, y, z, c), (any field in data: single string or array of 2 strings), (any field in data: single string), (d3 time format), (d3 time format), (null, single string, array of n hexcolors), (any numerical value)].
+			
+			// définit l'bjet qui va accueillir les paramètres définissant les axes.
+			var axisDefinition = {parameters:[]};
+			var axisName = [], axisType = [], axisPosition = [], axisField = [], axisMekko = [], axisInput = [], axisOutput = [], axisColors = [], axisLogbase = [];
+			
+			// boucle pour chaque axe
+			for (var i = 0; i < nbAxis; i++) {
+				axisName = allAxis[i][0];
+				axisType = allAxis[i][1];
+				axisPosition = allAxis[i][2];
+				axisField = allAxis[i][3];
+				axisMekko = allAxis[i][4];
+				axisInput = allAxis[i][5];
+				axisOutput = allAxis[i][6];
+				axisColors = allAxis[i][7];
+				axisLogbase = allAxis[i][8];
+				// teste si les infos obligatoires pour créer un axe sont toutes présentes
+				(axisName != "" && axisType != "" && axisPosition != "" && axisField != "") ? "" : console.log("Un axe au moins ne peut être défini, car les paramètres nécessaires à sa création ne sont pas tous définis.");
+				// parse les arrays s'il y en a (seuls axisField et axisColors peuvent être des arrays).
+				if (axisField != "" && axisField != undefined && axisField != null) {
+					axisField = axisField.replaceAll("'", '"');
+					(axisField.substring(0,1) == "[") ? axisField = JSON.parse(axisField) : "";
+				}
+				if (axisColors != "" && axisColors != undefined && axisColors != null) {
+					axisColors = axisColors.replaceAll("'", '"');
+					(axisColors.substring(0,1) == "[") ? axisColors = JSON.parse(axisColors) : "";
+				}
+				// prend en compte l'inversion des axes
+				// TODO :
+				// ajoute un nouvel axe à l'objet
+				var axis = {axisName: axisName, axisType: axisType, axisPosition: axisPosition, axisField: axisField, axisMekko: axisMekko, axisInput: axisInput, axisOutput: axisOutput, axisColors: axisColors, axisLogbase: axisLogbase};
+				axisDefinition.parameters.push(axis);
+				console.log(axisDefinition);
+			}
+		
+/**		
+		data.items.push(
+    {id: "7", name: "Douglas Adams", type: "comedy"}
+);
+		
+		
+		
+	// The values to put in the item
+var id = 7;
+var name = "The usual suspects";
+var type = "crime";
+// Create the item using the values
+var item = { id: id, name: name, type: type };
+// Add the item to the array
+data.items.push(item);	
+**/		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		// Gère l'inversion d'axes pour les graphes horizontaux.
+		(chartType == "BAR" || chartType == "VAR" || chartType == "VIN") ? isInverse = true : isInverse = false;
 		
 		// détermine la série s'il y en a, à afficher.
 		if (d.chart_serie != "") {
@@ -378,10 +459,11 @@ function encode_as_img_and_link(){
 			nbSeries = 0;
 		}
 		
-		
+		/**
 		// détermine si l'axe de gauche ("measure" ou "y") doit être recalculé en proportion.
 		(d.chart_version == "percent" || d.chart_version == "stacked-percent" || d.chart_version == "stacked-grouped-percent") ? isPercent = true : isPercent = false;
 		(chartSerie != "" && isPercent == true) ? messagesConfig = messagesConfig + "\n" + finalContainer + " : ne devrait pas être affiché avec un axe à 100%, car il n'y a qu'une seule série." : "";
+		**/
 		
 		// détermine le format des axes.
 		(d.chart_laxisformat != "") ? formatLeft = d.chart_laxisformat : formatLeft = "";
@@ -515,6 +597,9 @@ function encode_as_img_and_link(){
 		chartVersion: chartVersion,
 		chartType: chartType,
 		chartSerie: chartSerie,
+		allAxis: allAxis,
+		nbAxis: nbAxis,
+		axisDefinition: axisDefinition,
 		nbSeries: nbSeries,
 		isLegend: isLegend,
 		isMarkers: isMarkers,
@@ -622,9 +707,70 @@ function drawDimpleChart(configData, d, i, chartConfig) {
 			
 			var dsv = d3.dsv(chartConfig["dataDelimiter"], chartConfig["dataMime"]);
 			dsv(chartConfig["dataFile"], function (data) {
+			
+				// applique les filtres data si spécifiés dans le fichier de config. TODO: à déplacer vers PrepareData plutôt
+				if (chartConfig["isFilter"] == true) {
+					var filters = [], values = [], nbFilters = [];
+					filters = d.data_filterfield;
+					values = d.data_filtervalues;
+					if (filters.substring(0,1) == "[") {
+						filters = JSON.parse(filters);
+						nbFilters = JSON.parse(d.data_filterfield).length;
+					} else {
+						filters = filters;
+					}
+					(values.substring(0,1) == "[") ? values = JSON.parse(values) : values = values;
+					if (nbFilters > 1) {
+						for (var j = 0; j < nbFilters; j++) {
+							filterField = filters[j];
+							filterValues = values[j];
+							data = dimple.filterData(data, filterField, filterValues);
+						}
+					} else {
+						filterField = filters;
+						filterValues = values;
+						(chartConfig["isFilter"] == true) ? data = dimple.filterData(data, filterField, filterValues) : "";
+						//(chartConfig["isFilter"] == true) ? data = dimple.filterData(data, chartConfig["filterField"], chartConfig["finalFilterValues"]) : "";
+					}
+				}
+			
 				var myChart = new dimple.chart(svg, data);
 				// définit les marges du chart
 				myChart.setMargins(chartConfig["lmargin"], chartConfig["tmargin"], chartConfig["rmargin"], chartConfig["bmargin"]);
+				// boucle pour créer chaque axe		
+				for (var i = 0; i < chartConfig["nbAxis"]; i++) {	
+					var axisDefinition = chartConfig["axisDefinition"].parameters[i];
+					var varName = [], variables = {};
+					varName = axisDefinition["axisName"];
+					switch(axisDefinition["axisType"]) {
+						case "category":
+							variables[varName] = myChart.addCategoryAxis(axisDefinition["axisPosition"], axisDefinition["axisField"]);
+						break;
+						case "measure":
+							variables[varName] = myChart.addMeasureAxis(axisDefinition["axisPosition"], axisDefinition["axisField"]);
+						break;
+						case "percent":
+							variables[varName] = myChart.addPctAxis(axisPosition, axisField, axisMekko);
+						break;
+						case "time":
+							variables[varName] = myChart.addTimeAxis(axisPosition, axisField, axisInput, axisOutput);
+						break;
+						case "color":
+							variables[varName] = myChart.addColorAxis(axisField, axisColors); 
+							// Exemple : ["colorAxis", "color", "null" (position), "Unit Sales", "['#FF0000', '#00FF00', '#0000FF']"].
+						break;
+						case "log":
+							variables[varName] = myChart.addLogAxis(axisPosition, axisField, axisLogbase);
+						break;
+						default:
+							console.log("Aucune catégorie définie pour un des axes du graphe.");
+						break;
+					}
+				}
+					
+					
+				
+				/**
 				var b = [], l = [], s = [], r = [], t = [];
 				// définit l'axe du bas
 				(chartConfig["chartBottomType"] == "time") ? b = myChart.addTimeAxis(chartConfig["positionBottom"], chartConfig["finalBottom"], "%d/%m/%Y", "%a") : b = myChart.addCategoryAxis(chartConfig["positionBottom"], chartConfig["finalBottom"]);
@@ -668,9 +814,10 @@ function drawDimpleChart(configData, d, i, chartConfig) {
 			// Set a specific colour for the floating bars
 			//myChart.assignColor("Floating", "black", "black", 0.6);
 			//myChart.assignColor("Floating", "black", "black", 0.6);
+				**/
 				
-				
-				
+				s = myChart.addSeries(chartConfig["chartSerie"], chartConfig["chartDimple"]);
+
 				
 				/**
 				// définit la série
@@ -891,11 +1038,12 @@ String.prototype.replaceAll = function(search, replace) {
 - PARSER une array d'arrays !
 - Rajouter bordures plus foncée sur les aires (rajouter une série ??)
 - Gérer dimple quatre axes
-- Gérer filtre de données à multiples critères
+- Déplacer Filters vers PrepareData.
 - Gérer la concordance entre baxisfield et gaxisfield, et l'ordre correct et cohérent entre les deux settings (ORDER).
 - Voir pourquoi la légende ne se définit pas correctement (marges, et ordre des éléments) dans Reporting Am...ry.
 - Ask Stackoverflow sur l'aire multiple (l'une devant l'autre)
-- Calculer la taille des marges en fonction de la plus grande longueur d'étiquettes (uniquement pour les graphes ou les étiquettes sont verticales !)
+- Calculer la taille des marges en fonction de la plus grande longueur d'étiquettes (uniquement pour les graphes où les étiquettes sont verticales ! - PAS SUR QUE SEULS LES VERTICAUX SOIENT CONCERNES)
+- Gérer le floating des séries si spécifié (après avoir spécifié les séries)
 
 
 
@@ -924,7 +1072,7 @@ String.prototype.replaceAll = function(search, replace) {
 - Change timeframe with radio-buttons (different columns ??)
 - Save as image PNG
 - Export dataset
-- Try a design that looks like info + design (big numbers, chart full screen)
+- Try a design that looks like "info + design" (big numbers, chart full screen)
 - Skip visu but not bucket
 - Créer un générerateur de données (min, max, nb champs, quelles valeurs pour chaque champ) 
 - Ne lancer SpecialCharts que si SpecialCharts = "yes"
@@ -938,4 +1086,5 @@ String.prototype.replaceAll = function(search, replace) {
 - Légende corrigée et paramétrable
 - Ratio hauteur/largeur du chartContainer
 - Gérer le rapport hauteur/largeur du SVG (en récupérant la hauteur/largeur de l'élément DOM parent
+- Gérer filtre de données à multiples critères
 **/
