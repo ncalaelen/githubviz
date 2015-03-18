@@ -354,12 +354,17 @@ function encode_as_img_and_link(){
 		} else{
 			isMarkers = true;
 		}
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/gh-pages
 		/**
 		// change la catégorie du graphe si chartGroup renseigné.
 		(d.chart_baxisfield.substr(0,1) == "[") ? finalBottom = JSON.parse(d.chart_baxisfield) : finalBottom = d.chart_baxisfield;
 		// DEPRECATED (d.chart_gaxisfield != "") ? finalBottom = JSON.parse(d.chart_gaxisfield) : finalBottom = d.chart_baxisfield;
 		finalLeft = d.chart_laxisfield;
 		**/
+<<<<<<< HEAD
 		// Gère l'inversion d'axes pour les graphes horizontaux.
 		(chartType == "BAR" || chartType == "VAR" || chartType == "VIN") ? isInverse = true : isInverse = false;
 		/**
@@ -572,6 +577,92 @@ data.items.push(item);
 		
 		
 		
+=======
+		
+		
+		// détermine la position de l'axe du bas ("category", ou "x") et de l'axe de gauche ("measure", ou "y").
+		(chartType == "BAR" || chartType == "VAR" || chartType == "VIN") ? isInverse = true : isInverse = false;
+		/**
+		(chartType == "BAR" || chartType == "VAR" || chartType == "VIN") ? positionBottom = "y" : positionBottom = "x";
+		(chartType == "BAR" || chartType == "VAR" || chartType == "VIN") ? positionLeft = "x" : positionLeft = "y";
+		**/
+
+		
+		
+		// Gère les axes.
+		var allAxis = [];
+		if (d.chart_allaxis == "") {
+			alert("Impossible de dessiner le graphe, car aucun axe n'est défini. END.");
+			return;
+		} //else {
+			(d.chart_allaxis.substring(0,2) == "[[") ? allAxis = JSON.parse(d.chart_allaxis) : allAxis = d.chart_allaxis;
+			(d.chart_allaxis.substring(0,2) == "[[") ? nbAxis = allAxis.length : nbAxis = 1;
+			//(nbAxis > 1) ? axisDefinition = allAxis[i] : axisDefinition = allAxis;
+			// IMPORTANT ! Chaque axe doit être défini comme suit : ['Name', 'Type', 'Position', 'Field', 'Mekko', 'Input', 'Output', 'Colors', 'Logbase'].
+			// Valeurs possibles : [(leftAxis, topAxis, rightAxis, bottomAxis, etc), (category, measure, percent, time, color, log), (x, y, z, c), (any field in data: single string or array of 2 strings), (any field in data: single string), (d3 time format), (d3 time format), (null, single string, array of n hexcolors), (any numerical value)].
+			
+			// définit l'bjet qui va accueillir les paramètres définissant les axes.
+			var axisDefinition = {parameters:[]};
+			var axisName = [], axisType = [], axisPosition = [], axisField = [], axisMekko = [], axisInput = [], axisOutput = [], axisColors = [], axisLogbase = [];
+			
+			// boucle pour chaque axe
+			for (var i = 0; i < nbAxis; i++) {
+				axisName = allAxis[i][0];
+				axisType = allAxis[i][1];
+				axisPosition = allAxis[i][2];
+				axisField = allAxis[i][3];
+				axisMekko = allAxis[i][4];
+				axisInput = allAxis[i][5];
+				axisOutput = allAxis[i][6];
+				axisColors = allAxis[i][7];
+				axisLogbase = allAxis[i][8];
+				// teste si les infos obligatoires pour créer un axe sont toutes présentes
+				(axisName != "" && axisType != "" && axisPosition != "" && axisField != "") ? "" : console.log("Un axe au moins ne peut être défini, car les paramètres nécessaires à sa création ne sont pas tous définis.");
+				// parse les arrays s'il y en a (seuls axisField et axisColors peuvent être des arrays).
+				if (axisField != "" && axisField != undefined && axisField != null) {
+					axisField = axisField.replaceAll("'", '"');
+					(axisField.substring(0,1) == "[") ? axisField = JSON.parse(axisField) : "";
+				}
+				if (axisColors != "" && axisColors != undefined && axisColors != null) {
+					axisColors = axisColors.replaceAll("'", '"');
+					(axisColors.substring(0,1) == "[") ? axisColors = JSON.parse(axisColors) : "";
+				}
+				// prend en compte l'inversion des axes
+				// TODO :
+				// ajoute un nouvel axe à l'objet
+				var axis = {axisName: axisName, axisType: axisType, axisPosition: axisPosition, axisField: axisField, axisMekko: axisMekko, axisInput: axisInput, axisOutput: axisOutput, axisColors: axisColors, axisLogbase: axisLogbase};
+				axisDefinition.parameters.push(axis);
+				console.log(axisDefinition);
+			}
+		
+/**		
+		data.items.push(
+    {id: "7", name: "Douglas Adams", type: "comedy"}
+);
+		
+		
+		
+	// The values to put in the item
+var id = 7;
+var name = "The usual suspects";
+var type = "crime";
+// Create the item using the values
+var item = { id: id, name: name, type: type };
+// Add the item to the array
+data.items.push(item);	
+**/		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		// Gère l'inversion d'axes pour les graphes horizontaux.
+		(chartType == "BAR" || chartType == "VAR" || chartType == "VIN") ? isInverse = true : isInverse = false;
+>>>>>>> origin/gh-pages
 		
 		
 		
@@ -593,7 +684,10 @@ data.items.push(item);
 		}
 		**/
 		
+<<<<<<< HEAD
 		
+=======
+>>>>>>> origin/gh-pages
 		/**
 		// détermine si l'axe de gauche ("measure" ou "y") doit être recalculé en proportion.
 		(d.chart_version == "percent" || d.chart_version == "stacked-percent" || d.chart_version == "stacked-grouped-percent") ? isPercent = true : isPercent = false;
@@ -734,11 +828,18 @@ data.items.push(item);
 		chartLibrary: chartLibrary,
 		chartVersion: chartVersion,
 		chartType: chartType,
+<<<<<<< HEAD
 		//chartSerie: chartSerie,
 		allAxis: allAxis,
 		nbAxis: nbAxis,
 		axisDefinition: axisDefinition,
 		allSeries: allSeries,
+=======
+		chartSerie: chartSerie,
+		allAxis: allAxis,
+		nbAxis: nbAxis,
+		axisDefinition: axisDefinition,
+>>>>>>> origin/gh-pages
 		nbSeries: nbSeries,
 		serieDefinition: serieDefinition,
 		isLegend: isLegend,
@@ -877,14 +978,19 @@ function drawDimpleChart(configData, d, i, chartConfig) {
 				var myChart = new dimple.chart(svg, data);
 				// définit les marges du chart
 				myChart.setMargins(chartConfig["lmargin"], chartConfig["tmargin"], chartConfig["rmargin"], chartConfig["bmargin"]);
+<<<<<<< HEAD
 				
 				/** Note: Pour les deux boucles qui suivent, contrairement aux exemples trouvés pour la création dynamique de variables, ce n'est "variables[varName] = " qui fonctionne mais "window[varName] = ". Il y a une raison de ne pas utiliser window pour créer la variable, mais il faut investiguer pourquoi (sécurité ?), car là, ça marche. (VarName peut très bien être défini avec un préfixe + un compteur incrémental si on ne veut pas avoir à définir le nom de la variable). **/
 				
 				// définit les axes (boucle pour créer chaque axe)		
+=======
+				// boucle pour créer chaque axe		
+>>>>>>> origin/gh-pages
 				for (var i = 0; i < chartConfig["nbAxis"]; i++) {	
 					var axisDefinition = chartConfig["axisDefinition"].parameters[i];
 					var varName = [], variables = {};
 					varName = axisDefinition["axisName"];
+<<<<<<< HEAD
 					window[varName] = myChart[axisDefinition["axisAdd"]](axisDefinition["axisPosition"], axisDefinition["axisField"]); // ça marche !
 				}
 				// définit les séries (boucle pour créer chaque série)
@@ -898,6 +1004,36 @@ function drawDimpleChart(configData, d, i, chartConfig) {
 				
 
 				//(d.chart_baxisorderfield != "") ? bottomAxis.addOrderRule(chartConfig["chartBottomOrderField"], chartConfig["chartBottomOrderDesc"]) : "";
+=======
+					switch(axisDefinition["axisType"]) {
+						case "category":
+							variables[varName] = myChart.addCategoryAxis(axisDefinition["axisPosition"], axisDefinition["axisField"]);
+						break;
+						case "measure":
+							variables[varName] = myChart.addMeasureAxis(axisDefinition["axisPosition"], axisDefinition["axisField"]);
+						break;
+						case "percent":
+							variables[varName] = myChart.addPctAxis(axisPosition, axisField, axisMekko);
+						break;
+						case "time":
+							variables[varName] = myChart.addTimeAxis(axisPosition, axisField, axisInput, axisOutput);
+						break;
+						case "color":
+							variables[varName] = myChart.addColorAxis(axisField, axisColors); 
+							// Exemple : ["colorAxis", "color", "null" (position), "Unit Sales", "['#FF0000', '#00FF00', '#0000FF']"].
+						break;
+						case "log":
+							variables[varName] = myChart.addLogAxis(axisPosition, axisField, axisLogbase);
+						break;
+						default:
+							console.log("Aucune catégorie définie pour un des axes du graphe.");
+						break;
+					}
+				}
+					
+					
+				
+>>>>>>> origin/gh-pages
 				/**
 				var b = [], l = [], s = [], r = [], t = [];
 				// définit l'axe du bas
@@ -944,7 +1080,11 @@ function drawDimpleChart(configData, d, i, chartConfig) {
 			//myChart.assignColor("Floating", "black", "black", 0.6);
 				**/
 				
+<<<<<<< HEAD
 				//s = myChart.addSeries(chartConfig["chartSerie"], chartConfig["chartDimple"]);
+=======
+				s = myChart.addSeries(chartConfig["chartSerie"], chartConfig["chartDimple"]);
+>>>>>>> origin/gh-pages
 
 				
 				/**
@@ -1170,6 +1310,10 @@ String.prototype.replaceAll = function(search, replace) {
 - Passer les couleurs en paramètres dans chartConfig
 - Overrider la palette en définissant les couleurs dans le fichier de config.
 - Rajouter bordures plus foncée sur les aires (rajouter une série ??)
+<<<<<<< HEAD
+=======
+- Gérer dimple quatre axes
+>>>>>>> origin/gh-pages
 - Déplacer Filters vers PrepareData.
 - Gérer la concordance entre baxisfield et gaxisfield, et l'ordre correct et cohérent entre les deux settings (ORDER).
 - Voir pourquoi la légende ne se définit pas correctement (marges, et ordre des éléments) dans Reporting Am...ry.
@@ -1219,8 +1363,12 @@ String.prototype.replaceAll = function(search, replace) {
 - Ratio hauteur/largeur du chartContainer
 - Gérer le rapport hauteur/largeur du SVG (en récupérant la hauteur/largeur de l'élément DOM parent
 - Gérer filtre de données à multiples critères
+<<<<<<< HEAD
 - PARSER une array d'arrays !
 - Gérer dimple quatre axes
 - Passer le traitement des axes dans PrepareDimpleChart pour avoir un minimum de lignes dans DrawDimpleChart
 - Passer dans les axes ou les séries non pas seulement des noms d'axes ou de séries, mais des objets (donc sans "").
 **/
+=======
+**/
+>>>>>>> origin/gh-pages
